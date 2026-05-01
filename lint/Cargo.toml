@@ -11,7 +11,7 @@ rayon = "1.10"
 clap = { version = "4.5", features = ["derive"] }
 indicatif = "0.17"
 phf = { version = "0.11", features = ["macros"] }
-axum = { version = "0.7", optional = true }
+axum = { version = "0.8", optional = true }
 tokio = { version = "1.36", features = ["full"], optional = true }
 tower-http = { version = "0.5", features = ["cors"], optional = true }
 
