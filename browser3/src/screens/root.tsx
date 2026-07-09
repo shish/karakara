@@ -20,6 +20,10 @@ import Printable from "./printable/printable";
 import Queue from "./queue/queue";
 import TrackDetails from "./track/track";
 import TrackList from "./tracks/tracks";
+import { TrackEdit } from "./edit/edit";
+import { TagsEdit } from "./edit/tags";
+import { SubtitlesEdit } from "./edit/subtitles";
+
 
 const RoomSettings = lazy(() => import("./settings/settings"));
 
@@ -93,6 +97,12 @@ export function Root(): React.ReactElement {
                             path="tracks/:trackId"
                             element={<TrackDetails />}
                         />
+						<Route path="edit/:trackId" element={<TrackEdit />} />
+						<Route path="edit/:trackId/tags" element={<TagsEdit />} />
+						<Route
+							path="edit/:trackId/subtitles/:subtitleVariant"
+							element={<SubtitlesEdit />}
+						/>
                         <Route
                             path="queue"
                             element={<TracksOrQueueOrControl />}
