@@ -17,7 +17,7 @@ async def _background_tracks_update_event(app: App) -> None:
     # update MQTT every time - broadcasting a no-change update is a tiny
     # waste of resources, but it makes sure we broadcast an update even
     # if the update happened while the app was offline
-    log.info("`tracks.json` mqtt event")
+    log.debug("`tracks.json` mqtt event")
     await app.ctx.mqtt.publish(
         "global/tracks-updated",
         json.dumps({"tracks_json_mtime": app.ctx.track_manager.mtime}),
