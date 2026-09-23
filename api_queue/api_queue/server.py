@@ -83,7 +83,7 @@ async def aio_mqtt_configure(app: App):
 
 
 @app.listener("after_server_stop")
-async def aio_mqtt_close(app: App, _loop):
+async def aio_mqtt_close(app: App):
     mqtt = app.config.MQTT
     if isinstance(mqtt, str):
         log.info("[mqtt] closing")
