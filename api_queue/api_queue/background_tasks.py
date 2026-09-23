@@ -10,18 +10,17 @@ from .api_types import App
 async def _background_tracks_update_event(app: App) -> None:
     log.debug("`tracks.json` check mtime")
 
-    if not app.ctx.track_manager.has_tracks_updated:
-        return
+    if app.ctx.track_manager.has_tracks_updated:
+        log.info("`tracks.json` reload")
+        app.ctx.track_manager.reload_tracks()
 
-    log.info("`tracks.json` reload")
-    app.ctx.track_manager.reload_tracks()
-
-    tracks_json_mtime = app.ctx.track_manager.mtime
-
+    # update MQTT every time - broadcasting a no-change update is a tiny
+    # waste of resources, but it makes sure we broadcast an update even
+    # if the update happened while the app was offline
     log.info("`tracks.json` mqtt event")
     await app.ctx.mqtt.publish(
         "global/tracks-updated",
-        json.dumps({"tracks_json_mtime": tracks_json_mtime}),
+        json.dumps({"tracks_json_mtime": app.ctx.track_manager.mtime}),
         retain=True,
     )
 
