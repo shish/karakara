@@ -15,12 +15,14 @@ def cleanup(processed_dir: Path, tracks: Sequence[Track], delete: bool, threads:
     """
     Delete any files from the processed dir that aren't included in any tracks
     """
-    expected = set()
+    expected: set[Path] = set()
     for track in tracks:
         for target in track.targets:
             expected.add(target.path)
 
+    to_clean_count = 0
     def _cleanup(path: Path) -> None:
+        nonlocal to_clean_count
         if path.is_file() and path not in expected:
             rel = str(path.relative_to(processed_dir))
             if any((i in rel) for i in SCAN_IGNORE):
@@ -29,7 +31,10 @@ def cleanup(processed_dir: Path, tracks: Sequence[Track], delete: bool, threads:
                 log.info(f"Cleaning up {rel}")
                 path.unlink()
             else:
-                log.info(f"{rel} due to be cleaned up")
+                log.debug(f"{rel} due to be cleaned up")
+                to_clean_count += 1
 
     files = list(processed_dir.glob("**/*"))
     thread_map(_cleanup, files, max_workers=threads, desc="cleanup", unit="file")
+    if to_clean_count > 0:
+        log.info(f"{to_clean_count} files to be cleaned up")
