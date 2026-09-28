@@ -1,3 +1,4 @@
+from enum import unique
 import json
 import logging
 import os
@@ -155,19 +156,23 @@ def sanitize_tags(tags: dict[str, list[str]] | None) -> dict[str, list[str]]:
     return tags
 
 
-def get_unique_path(base_path: Path, base_name: str, suffix: str = "") -> Path:
+def get_unique_path(requested: Path) -> Path:
     """
     Generate a unique path by appending numbers if the path already exists.
 
     >>> import tempfile
     >>> temp_dir = Path(tempfile.mkdtemp())
     >>> (temp_dir / "test.txt").touch()
-    >>> get_unique_path(temp_dir, "test", ".txt")
+    >>> get_unique_path(temp_dir / "test.txt")
     PosixPath('.../test (2).txt')
     >>> (temp_dir / "test (2).txt").touch()
-    >>> get_unique_path(temp_dir, "test", ".txt")
+    >>> get_unique_path(temp_dir / "test.txt")
     PosixPath('.../test (3).txt')
     """
+    base_path = requested.parent
+    base_name = requested.stem
+    suffix = requested.suffix
+
     unique_path = base_path / f"{base_name}{suffix}"
     counter = 2
     while unique_path.exists():
@@ -187,7 +192,7 @@ async def request_track(payload: dict[str, t.Any]) -> JSONResponse:
     """
     tags = sanitize_tags(payload.get("tags"))
     track_id = tags_to_id(tags)
-    track_dir = get_unique_path(UPLOAD_ROOT, track_id)
+    track_dir = get_unique_path(UPLOAD_ROOT / track_id)
     meta_path = track_dir / f"{track_id}.txt"
     await write_tags_file(meta_path, tags, "needs files, lyrics, timings")
     webhook_url = os.getenv("DISCORD_WEBHOOK_REQUESTS_URL")
@@ -213,7 +218,7 @@ async def submit_track(payload: dict[str, t.Any]) -> JSONResponse:
     tags = sanitize_tags(payload.get("tags"))
     track_id = tags_to_id(tags)
 
-    session_dir = get_unique_path(UPLOAD_ROOT, track_id)
+    session_dir = get_unique_path(UPLOAD_ROOT / track_id)
     meta_path = session_dir / f"{track_id}.txt"
     await write_tags_file(meta_path, tags, "awaiting moderator approval")
 
@@ -227,9 +232,8 @@ async def submit_track(payload: dict[str, t.Any]) -> JSONResponse:
             orig_filename = orig_path.name
 
             targ_path = session_dir / Path(track_id).with_suffix(orig_path.suffix.lower()).name
-            while targ_path.exists():
-                targ_path = targ_path.with_stem(targ_path.stem + "_")
-            shutil.move(data_path.as_posix(), targ_path.as_posix())
+            unique_path = get_unique_path(targ_path)
+            shutil.move(data_path.as_posix(), unique_path.as_posix())
             moved_files.append(orig_filename)
             info_path.unlink()
 
