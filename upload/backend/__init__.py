@@ -88,7 +88,7 @@ async def begin_upload_session() -> JSONResponse:
     return JSONResponse({"session_id": session_id})
 
 
-def tags_to_id(tags: dict[str, t.Any]) -> str:
+def tags_to_id(tags: dict[str, list[str]]) -> str:
     """
     >>> tags_to_id({"title": ["My Song"], "artist": ["The Artist"]})
     'The Artist - My Song'
@@ -226,7 +226,7 @@ async def submit_track(payload: dict[str, t.Any]) -> JSONResponse:
             orig_path = Path(info["filename"])
             orig_filename = orig_path.name
 
-            targ_path = session_dir / Path(track_id).with_suffix(orig_path.suffix).name
+            targ_path = session_dir / Path(track_id).with_suffix(orig_path.suffix.lower()).name
             while targ_path.exists():
                 targ_path = targ_path.with_stem(targ_path.stem + "_")
             shutil.move(data_path.as_posix(), targ_path.as_posix())
