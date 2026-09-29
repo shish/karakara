@@ -97,8 +97,8 @@ def tags_to_id(tags: dict[str, list[str]]) -> str:
     'The Show - My Song'
     >>> tags_to_id({"title": ["My Song"]})
     'My Song'
-    >>> tags_to_id({"title": ["My/Song: I'm The*Best?"], "artist": ["The/Artist"]})
-    'The Artist - My Song Im The Best'
+    >>> tags_to_id({"title": ["My/Song: I'm The*Best?"], "artist": ["The/Art.ist"]})
+    'The Art ist - My Song Im The Best'
     """
     title = tags.get("title", ["Untitled"])
     if "from" in tags and tags["from"] and tags["from"][0].strip():
@@ -107,8 +107,8 @@ def tags_to_id(tags: dict[str, list[str]]) -> str:
         track_id = f"{tags['artist'][0].strip()} - {title[0]}"
     else:
         track_id = title[0]
-    track_id = re.sub(r"[']", "", track_id)
-    track_id = re.sub(r"[^a-zA-Z0-9_\-\.]+", " ", track_id)
+    track_id = re.sub(r"[']+", "", track_id)
+    track_id = re.sub(r"[^a-zA-Z0-9_\-]+", " ", track_id)
     return track_id.strip()
 
 
