@@ -52,6 +52,6 @@
         "storybook": "^10.6.0",
         "storybook-react-rsbuild": "^3.6.0",
         "typescript": "^7.0",
-        "vitest": "^4.1.11"
+        "vitest": "^5.0.2"
     }
 }
