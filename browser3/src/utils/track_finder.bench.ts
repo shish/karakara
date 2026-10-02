@@ -1,73 +1,73 @@
-import { bench, describe } from "vitest";
+import { test } from "vitest";
 
 import { generateTracks } from "./test_data";
 import * as finder from "./track_finder";
 
-describe("find_tracks", () => {
+test("find_tracks", async ({ bench }) => {
     const tracks = Object.values(generateTracks(10000));
     const subset = tracks.slice(0, 1000);
 
-    bench("tags and search (full)", () => {
+    await bench("tags and search (full)", () => {
         finder.find_tracks(tracks, ["category:anime", "from:Macross"], "mac");
-    });
+    }).run();
 
-    bench("tags and search (subset)", () => {
+    await bench("tags and search (subset)", () => {
         finder.find_tracks(subset, ["category:anime", "from:Macross"], "mac");
-    });
+    }).run();
 
-    bench("only tags (full)", () => {
+    await bench("only tags (full)", () => {
         finder.find_tracks(tracks, ["category:anime", "from:Macross"], "");
-    });
+    }).run();
 
-    bench("only tags (subset)", () => {
+    await bench("only tags (subset)", () => {
         finder.find_tracks(subset, ["category:anime", "from:Macross"], "");
-    });
+    }).run();
 
-    bench("only search (full)", () => {
+    await bench("only search (full)", () => {
         finder.find_tracks(tracks, [], "macross");
-    });
+    }).run();
 
-    bench("only search (subset)", () => {
+    await bench("only search (subset)", () => {
         finder.find_tracks(subset, [], "macross");
-    });
+    }).run();
 });
 
-describe("apply_tags", () => {
+test("apply_tags", async ({ bench }) => {
     const tracks = Object.values(generateTracks(10000));
 
-    bench("no tags", () => {
+    await bench("no tags", () => {
         finder.apply_tags(tracks, []);
-    });
+    }).run();
 
-    bench("single tag", () => {
+    await bench("single tag", () => {
         finder.apply_tags(tracks, ["category:anime"]);
-    });
+    }).run();
 
-    bench("multiple tags", () => {
+    await bench("multiple tags", () => {
         finder.apply_tags(tracks, [
             "category:anime",
             "from:Macross",
             "vocaltrack:on",
         ]);
-    });
+    }).run();
 });
 
-describe("apply_search", () => {
+test("apply_search", async ({ bench }) => {
     const tracks = Object.values(generateTracks(10000));
 
-    bench("empty query", () => {
+    await bench("empty query", () => {
         finder.apply_search(tracks, "");
-    });
+    }).run();
 
-    bench("short query", () => {
+    await bench("short query", () => {
         finder.apply_search(tracks, "mac");
-    });
+    }).run();
 
-    bench("longer query", () => {
+    await bench("longer query", () => {
         finder.apply_search(tracks, "macross");
-    });
+    }).run();
 
-    bench("multi-word query", () => {
+    await bench("multi-word query", () => {
         finder.apply_search(tracks, "macross gundam");
-    });
+    }).run();
 });

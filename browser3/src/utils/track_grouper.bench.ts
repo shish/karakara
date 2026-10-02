@@ -1,22 +1,22 @@
-import { bench, describe } from "vitest";
+import { test } from "vitest";
 
 import { generateTracks } from "./test_data";
 import * as grouper from "./track_grouper";
 
-describe("summarise_tags", () => {
+test("summarise_tags", async ({ bench }) => {
     const tracks = Object.values(generateTracks(10000));
     const subset = tracks.slice(0, 1000);
 
-    bench("full library", () => {
+    await bench("full library", () => {
         grouper.summarise_tags(tracks);
-    });
+    }).run();
 
-    bench("subset", () => {
+    await bench("subset", () => {
         grouper.summarise_tags(subset);
-    });
+    }).run();
 });
 
-describe("suggest_next_filters", () => {
+test("suggest_next_filters", async ({ bench }) => {
     const summary = {
         macross: {
             "movie 1": 2,
@@ -37,47 +37,47 @@ describe("suggest_next_filters", () => {
         },
     };
 
-    bench("no filters", () => {
+    await bench("no filters", () => {
         grouper.suggest_next_filters([], summary);
-    });
+    }).run();
 
-    bench("curated tag", () => {
+    await bench("curated tag", () => {
         grouper.suggest_next_filters(["category:anime"], summary);
-    });
+    }).run();
 
-    bench("tag having children", () => {
+    await bench("tag having children", () => {
         grouper.suggest_next_filters(["from:macross"], summary);
-    });
+    }).run();
 
-    bench("multiple filters", () => {
+    await bench("multiple filters", () => {
         grouper.suggest_next_filters(
             ["category:anime", "vocaltrack:on", "lang:jp"],
             summary,
         );
-    });
+    }).run();
 });
 
-describe("group_tracks", () => {
+test("group_tracks", async ({ bench }) => {
     const tracks = Object.values(generateTracks(10000));
     const subset = tracks.slice(0, 1000);
 
-    bench("no filters", () => {
+    await bench("no filters", () => {
         grouper.group_tracks([], tracks);
-    });
+    }).run();
 
-    bench("single filter", () => {
+    await bench("single filter", () => {
         grouper.group_tracks(["category:anime"], tracks);
-    });
+    }).run();
 
-    bench("multiple filters", () => {
+    await bench("multiple filters", () => {
         grouper.group_tracks(["category:anime", "vocaltrack:on"], tracks);
-    });
+    }).run();
 
-    bench("category:new", () => {
+    await bench("category:new", () => {
         grouper.group_tracks(["category:new"], tracks);
-    });
+    }).run();
 
-    bench("subset", () => {
+    await bench("subset", () => {
         grouper.group_tracks(["category:anime", "vocaltrack:on"], subset);
-    });
+    }).run();
 });
