@@ -281,6 +281,18 @@ const ReleaseDateSection = () => (
     </section>
 );
 
+const ExplicitSection = () => (
+    <section>
+        <h3>Explicit</h3>
+        <p>(Consider both audio and video - would a normie parent be upset if you performed this to their child?)</p>
+        <ul className="check">
+            <li><label><input type="radio" name="explicit" value="yes" /> Yes</label></li>
+            <li><label><input type="radio" name="explicit" value="no" /> No</label></li>
+            <li><label><input type="radio" name="explicit" value="" checked /> Unsure</label></li>
+        </ul>
+    </section>
+);
+
 const VideoFileSection = () => (
     <section>
         <h3>Video (or Audio) File</h3>
@@ -596,6 +608,7 @@ export const UploadForm = () => {
             <VocalStyleSection />
             <VocalTrackSection />
             <ReleaseDateSection />
+            <ExplicitSection />
             <VideoFileSection />
             <ImageSection />
             <SubtitlesSection />
