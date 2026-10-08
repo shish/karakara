@@ -288,7 +288,7 @@ const ExplicitSection = () => (
         <ul className="check">
             <li><label><input type="radio" name="explicit" value="yes" /> Yes</label></li>
             <li><label><input type="radio" name="explicit" value="no" /> No</label></li>
-            <li><label><input type="radio" name="explicit" value="" checked /> Unsure</label></li>
+            <li><label><input type="radio" name="explicit" value="" /> Unsure</label></li>
         </ul>
     </section>
 );
