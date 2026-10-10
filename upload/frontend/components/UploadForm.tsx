@@ -345,15 +345,15 @@ const SubtitlesSection = () => (
         <h3>Subtitles</h3>
         <ul>
             <li>
-                The end goal is to get a .srt subtitle file with accurate
+                The end goal is to get a subtitle file with accurate
                 timings; if you have this, it'll save a lot of work :)
                 Personally I'm making these with Aegisub but anything which
-                outputs SRT files should work.
+                outputs standard subtitle files should work.
             </li>
             <li>
                 Don't do anything fancy - no formatting, no mid-line timings, no
                 "[instrumental break]" markers, no preview of the next line
-                &mdash; the input .srt file should <em>only</em> contain the
+                &mdash; the input sub file should <em>only</em> contain the
                 timings for the lyrics at the moment that they are being sung,
                 and the system will take care of the rest automatically
             </li>
@@ -363,7 +363,7 @@ const SubtitlesSection = () => (
                 extras
             </li>
         </ul>
-        <input type="file" id="textFiles" multiple accept=".srt" />
+        <input type="file" id="textFiles" multiple accept=".srt, .lrc, .vtt, .ssa, .ass" />
     </section>
 );
 
