@@ -534,6 +534,9 @@ class SubFile:
     re_ssa_line = re.compile(
         r"Dialogue:.+?,(?P<start>.+?),(?P<end>.+?),(?P<style>.*?),(?P<name>.*?),(?P<marginL>.*?),(?P<marginR>.*?),(?P<marginV>.*?),(?P<effect>.*?),(?P<text>.+)[\n$]"
     )
+    re_lrc_line = re.compile(
+        r"\[(?P<minutes>\d{1,2}):(?P<seconds>\d{2})(?:\.(?P<centiseconds>\d+))?\](?P<text>.*)"
+    )
 
     def __init__(self, data: str):
         """
@@ -551,10 +554,17 @@ class SubFile:
         >>> print(SubFile(ssa))
         1: 00:00:00.000 -> 00:00:01.000: ssa
 
+        >>> lrc = '''
+        ... [00:00.50]lrc format
+        ... [00:02.00]
+        ... '''
+        >>> print(SubFile(lrc))
+        1: 00:00:00.500 -> 00:00:02.000: lrc format
+
         >>> print(SubFile('not real subtitles'))
         <BLANKLINE>
         """
-        self.subtitles = self._parse_srt(data) or self._parse_ssa(data)
+        self.subtitles = self._parse_srt(data) or self._parse_ssa(data) or self._parse_lrc(data)
 
     def __str__(self) -> str:
         return "\n".join(str(subtitle) for subtitle in self.subtitles)
@@ -639,6 +649,65 @@ class SubFile:
             )
 
         return [parse_line(line_dict, i + 1) for i, line_dict in enumerate(lines)]
+
+    @staticmethod
+    def _parse_lrc(source: str) -> list[Subtitle]:
+        """
+        Parse LRC (Lyrics) format.
+        LRC format uses timestamps in the format [mm:ss.xx] followed by text.
+
+        >>> lrc = r'''
+        ... [00:13.50]test, it's, キ
+        ... [00:22.34]second bit
+        ... [00:30.00]
+        ... [00:40.00]third bit
+        ... '''
+        >>> print(SubFile(lrc))
+        1: 00:00:13.500 -> 00:00:22.340: test, it's, キ
+        2: 00:00:22.340 -> 00:00:30.000: second bit
+        3: 00:00:40.000 -> 00:00:45.000: third bit
+        """
+        matches = list(SubFile.re_lrc_line.finditer(source))
+
+        if not matches:
+            return []
+
+        # Parse all lines with their timestamps
+        parsed_lines: list[tuple[SubTime, str]] = []
+        for match in matches:
+            line_dict = match.groupdict()
+            minutes = int(line_dict["minutes"])
+            seconds = int(line_dict["seconds"])
+            centiseconds = int(line_dict["centiseconds"] or "0") if line_dict.get("centiseconds") else 0
+            text = line_dict["text"].strip()
+            start_time = SubTime(minutes=minutes, seconds=seconds, milliseconds=centiseconds * 10)
+            parsed_lines.append((start_time, text))
+
+        # Create subtitles, skipping empty lines and calculating end times from next timestamp
+        lines: list[Subtitle] = []
+        for i, (start_time, text) in enumerate(parsed_lines):
+            # Skip empty lines
+            if not text:
+                continue
+
+            # End time is the next timestamp (whether it has text or not)
+            if i + 1 < len(parsed_lines):
+                end_time = parsed_lines[i + 1][0]
+            else:
+                # For the last line, add default duration
+                end_time = start_time + SubTime(seconds=5)
+
+            lines.append(
+                Subtitle(
+                    idx=len(lines) + 1,
+                    start=start_time,
+                    end=end_time,
+                    text=text,
+                    top=False,
+                )
+            )
+
+        return lines
 
     def create_ssa(self) -> str:
         data = dedent("""\
