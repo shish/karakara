@@ -1,9 +1,7 @@
 import { faCircleChevronRight } from "@fortawesome/free-solid-svg-icons";
 import { FAIcon } from "@shish2k/react-faicon";
-import { useContext } from "react";
 
 import { List, ListItem } from "@/components";
-import { ExploreContext } from "@/providers/explore";
 import { normalise_cmp } from "@/utils";
 
 import styles from "./FilterList.module.scss";
@@ -22,11 +20,14 @@ function unThe(filter: string): string {
 export function FilterList({
     heading,
     filters,
+    setFilters,
+    setExpanded,
 }: {
     heading: string;
     filters: Record<string, number>;
+    setFilters: (value: string[] | ((filters: string[]) => string[])) => void;
+    setExpanded: (value: string | null) => void;
 }): React.ReactElement {
-    const { setFilters, setExpanded } = useContext(ExploreContext);
 
     return (
         <List>

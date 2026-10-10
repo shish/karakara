@@ -1,7 +1,4 @@
-import { useContext } from "react";
-
 import { List } from "@/components";
-import { ExploreContext } from "@/providers/explore";
 import { normalise_cmp } from "@/utils";
 
 import { FilterList } from "./FilterList";
@@ -12,11 +9,16 @@ import styles from "./GroupedFilterList.module.scss";
 export function GroupedFilterList({
     heading,
     filters,
+    expanded,
+    setExpanded,
+    setFilters,
 }: {
     heading: string;
     filters: Record<string, Record<string, number>>;
+    expanded: string | null;
+    setExpanded: (value: string | null) => void;
+    setFilters: (value: string[] | ((filters: string[]) => string[])) => void;
 }): React.ReactElement {
-    const { expanded } = useContext(ExploreContext);
 
     return (
         <List>
@@ -29,12 +31,15 @@ export function GroupedFilterList({
                                 filter={group}
                                 count={Object.keys(filters[group]).length}
                                 expanded={true}
+                                setExpanded={setExpanded}
                             >
                                 {group}
                             </FilterListGroupHeader>
                             <FilterList
                                 heading={heading}
                                 filters={filters[group]}
+                                setFilters={setFilters}
+                                setExpanded={setExpanded}
                             />
                         </div>
                     ) : (
@@ -43,6 +48,7 @@ export function GroupedFilterList({
                             filter={group}
                             count={Object.keys(filters[group]).length}
                             expanded={false}
+                            setExpanded={setExpanded}
                         >
                             {group}
                         </FilterListGroupHeader>

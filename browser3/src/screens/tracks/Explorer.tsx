@@ -19,7 +19,7 @@ export function Explorer(): React.ReactElement {
     const { tracks } = useContext(ServerContext);
     const { trackList } = useContext(RoomContext);
     const { bookmarks } = useContext(ClientContext);
-    const { search, setSearch, filters, setFilters, setExpanded } =
+    const { search, setSearch, filters, setFilters, expanded, setExpanded } =
         useContext(ExploreContext);
 
     const sections = useMemoArr(
@@ -78,6 +78,9 @@ export function Explorer(): React.ReactElement {
                             key={heading}
                             heading={heading}
                             filters={section.groups}
+                            expanded={expanded}
+                            setExpanded={setExpanded}
+                            setFilters={setFilters}
                         />
                     );
                 }
@@ -87,6 +90,8 @@ export function Explorer(): React.ReactElement {
                             key={heading}
                             heading={heading}
                             filters={section.filters}
+                            setFilters={setFilters}
+                            setExpanded={setExpanded}
                         />
                     );
                 }

@@ -1,23 +1,21 @@
 import { faCircleMinus, faCirclePlus } from "@fortawesome/free-solid-svg-icons";
 import { FAIcon } from "@shish2k/react-faicon";
-import { useContext } from "react";
 
 import { ListItem } from "@/components";
-import { ExploreContext } from "@/providers/explore";
 
 export function FilterListGroupHeader({
     filter,
     count,
     expanded,
+    setExpanded,
     children,
 }: {
     filter: string;
     count: number;
     expanded: boolean;
+    setExpanded: (value: string | null) => void;
     children: React.ReactNode;
 }): React.ReactElement {
-    const { setExpanded } = useContext(ExploreContext);
-
     return (
         <ListItem
             title={children}
