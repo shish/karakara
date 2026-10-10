@@ -38,7 +38,25 @@ UL.list {
             flex: 0 0 auto;
         }
     }
-    LI:last-child {
+    // The last child of the root list has no border,
+    // but the last child of a nested list does have a border.
+    // FIXME: but the last child of a nested list shouldn't
+    // have a border, if the nested list is the last child of
+    // the root list...
+    &>LI:last-child {
         border-bottom: 0;
+    }
+    UL LI:last-child {
+        border-bottom: 1px solid var(--list-border);
+    }
+
+    UL {
+        margin: 0;
+        border-radius: 0;
+        border-top: 0;
+        border-right: 0;
+        border-left: 1em solid var(--list-shadow);
+        border-bottom: 0;
+        box-shadow: none;
     }
 }

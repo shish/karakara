@@ -126,3 +126,33 @@ export const Empty: Story = {
         children: null,
     },
 };
+
+export const WithNesting: Story = {
+    args: {
+        children: (
+            <>
+                <ListItem title="Genre" count={3} />
+                <List>
+                    <ListItem title="Rock" count={45} />
+                    <ListItem title="Pop" count={38} />
+                    <List>
+                        <ListItem title="Pop Pop!" count={38} />
+                    </List>
+                    <ListItem title="Jazz" count={28} />
+                    <List>
+                        <ListItem title="ElectroJazz" count={12} />
+                        <ListItem title="PopJazz" count={14} />
+                        <ListItem title="JazzyJazz" count={19} />
+                    </List>
+                </List>
+                <ListItem title="Decade" count={4} />
+                <List>
+                    <ListItem title="1980s" count={52} />
+                    <ListItem title="1990s" count={67} />
+                    <ListItem title="2000s" count={45} />
+                    <ListItem title="2010s" count={38} />
+                </List>
+            </>
+        ),
+    },
+};
