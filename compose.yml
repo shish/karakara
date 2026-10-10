@@ -7,6 +7,7 @@ networks:
 
 services:
   frontend:
+    # TODO: investigate why caddy 2.11+ crash-loops
     image: caddy:2.10-alpine
     restart: unless-stopped
     mem_limit: 1g
