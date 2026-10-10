@@ -9,10 +9,9 @@ import { RoomContext } from "@/providers/room";
 import { ServerContext } from "@/providers/server";
 import { find_tracks } from "@/utils/track_finder";
 import { group_tracks } from "@/utils/track_grouper";
+import { FilterList, GroupedFilterList } from "@/components";
 import { Bookmarks } from "./Bookmarks";
 import styles from "./Explorer.module.scss";
-import { FilterList } from "./FilterList";
-import { GroupedFilterList } from "./GroupedFilterList";
 import { TrackItem } from "./TrackItem";
 
 export function Explorer(): React.ReactElement {
