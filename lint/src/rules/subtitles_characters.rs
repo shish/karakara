@@ -14,7 +14,7 @@ static OK_SUBTITLE_CHARS: Set<char> = phf_set! {
     'è', 'é',
     'ī', 'í',
     'ō', 'ò', 'ô', 'ó',
-    'Ū', 'ú',
+    'Ū', 'ū', 'ú', 'Ü', 'ü',
     'ñ',
     '\u{2018}', '\u{2019}',
     '\n', // newline isn't allowed, but we have a dedicated rule for that
