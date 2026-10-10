@@ -380,26 +380,19 @@ const ContributorSection = () => (
     </section>
 );
 
+const SourcesSection = () => (
+    <section>
+        <h3>Sources</h3>
+        <p>Eg links to websites with video or lyrics</p>
+        <input type="text" name="source" />
+        <input type="text" name="source" />
+        <input type="text" name="source" />
+    </section>
+);
+
 const LinksInfoSection = () => (
     <section>
-        <h3>Links / any other info</h3>
-        <ul>
-            <li>
-                If you don't have a subtitle file, a link to a website with the
-                lyrics is helpful
-            </li>
-            <li>
-                If you don't have a video file, specifying the season / episode
-                number can help to track one down
-            </li>
-            <li>
-                Youtube links are helpful to make sure we've got the right
-                version of the right song, but rarely work well as sources
-                (frequent watermarks, extra "like and subscribe for more!!!"
-                clips tacked onto the beginning or end, weird cropping,
-                inconsistent volumes...)
-            </li>
-        </ul>
+        <h3>Any other info</h3>
         <textarea name="info" rows={4}></textarea>
     </section>
 );
@@ -613,6 +606,7 @@ export const UploadForm = () => {
             <ImageSection />
             <SubtitlesSection />
             <ContributorSection />
+            <SourcesSection />
             <LinksInfoSection />
 
             {uploads.length > 0 && (
