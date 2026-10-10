@@ -118,6 +118,10 @@ async def write_tags_file(meta_path: Path, tags: dict[str, list[str]], status: s
         for key, values in tags.items():
             for value in values:
                 if value:
+                    if ":" in value:
+                        value = f'"{value}"'
+                    if "\n" in value:
+                        value = value.replace("\n", " -- ")
                     await f.write(f"{key}:{value}\n")
         await f.write(f"added:{datetime.now().strftime('%Y-%m-%d')}\n")
         await f.write(f"status:{status}\n")
