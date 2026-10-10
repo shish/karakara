@@ -2,6 +2,8 @@ export { BackOr } from "./BackOr/BackOr";
 export { ButtonRow } from "./ButtonRow/ButtonRow";
 export { ConfigMenu } from "./ConfigMenu/ConfigMenu";
 export { EventProgressBar } from "./EventProgressBar/EventProgressBar";
+export { FilterList } from "./FilterList/FilterList";
+export { GroupedFilterList } from "./FilterList/GroupedFilterList";
 export { List } from "./List/List";
 export { ListItem } from "./List/ListItem";
 export { Thumb } from "./List/Thumb";
