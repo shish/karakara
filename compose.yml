@@ -53,9 +53,6 @@ services:
     environment:
       PATH_SOURCE: /media/source
       GIT_COMMIT_ON_WRITE: True
-      PUID: ${UID}
-      PGID: ${GID}
-      UMASK: 002
     volumes:
       - ${PATH_HOST_media}/source:/media/source:rw
 

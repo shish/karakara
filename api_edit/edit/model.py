@@ -92,7 +92,7 @@ class FileModel:
     def _commit_change(self, path: Path) -> None:
         path_relative = str(path.relative_to(self.path_source))
         self._git(("add", path_relative))
-        self._git(("commit", path_relative, "--message", __name__))
+        self._git(("commit", path_relative, "--message", f"{__name__} {path_relative}"))
 
     def file_read(self, path: Path) -> str:
         logger.debug("file_read - %s", path)
@@ -103,9 +103,13 @@ class FileModel:
             logger.debug("File content unchanged - abort save - %s", path)
             return
         file_path = self._get_file(path)
+
+        # Old backup
         # file_path_backup = self._get_local_filesystem_backup_path(file_path)
         # file_path.copy(file_path_backup)
-        self._commit_change(file_path)  # should be null op for the files existing state, make sure the original state is version controlled
+
+        # git commit: should be null op for the files existing state, make sure the original state is version controlled
+        self._commit_change(file_path)
         file_path.write_text(data)
         logger.debug("file_write - %s", path)
         self._commit_change(file_path)
