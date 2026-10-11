@@ -29,6 +29,27 @@
 			overflow-y: scroll;
 			height: 100vh;
 		}
+		#controls {
+			display: grid;
+			grid-template:
+				"upload title save" 1fr
+				"download title save" 1fr
+				/ 1fr 2fr 1fr;
+			width: 100%;
+		}
+		#controls #button_upload {
+			grid-area: upload;
+		}
+		#controls #button_download {
+			grid-area: download;
+		}
+		#controls #button_save {
+			grid-area: save;
+		}
+		#controls h2 {
+			grid-area: title;
+			text-align: center;
+		}
 		#file_container textarea {
 			width: 100%;
 			height: 100%;
@@ -43,9 +64,14 @@
 <div class="flex_container">
 	<div id="file_list">Loading ...</div>
 	<div id="file_container">
-		<h2 id="file_title">No file selected</h2>
-		<textarea id="file_content"></textarea>
-		<button id="button_save">Save</button>
+    	<div id="controls">
+        	<input type="file" id="input_upload" hidden />
+        	<button id="button_upload">Load from File</button>
+        	<button id="button_download">Save as File</button>
+        	<h2 id="file_title">No file selected</h2>
+        	<button id="button_save">Save</button>
+    	</div>
+        <textarea id="file_content"></textarea>
 	</div>
 </div>
 <script type="module">
@@ -64,6 +90,9 @@ const $file_list = document.getElementById('file_list')
 const $file_title = document.getElementById('file_title')
 const $file_content = document.getElementById('file_content')
 const $button_save = document.getElementById('button_save')
+const $input_upload = document.getElementById('input_upload')
+const $button_upload = document.getElementById('button_upload')
+const $button_download = document.getElementById('button_download')
 
 function getFileContents(event) {
 	const file = event.target.dataset.file
@@ -107,6 +136,46 @@ function postFileContents(event) {
 	});
 }
 $button_save.addEventListener('click', postFileContents)
+
+function selectFileContents(event) {
+    if(!$button_save.dataset.file) {
+        console.warn('no file selected');
+        return
+    }
+    $input_upload.accept = $button_save.dataset.file.split('.').pop()
+	$input_upload.click()
+}
+$button_upload.addEventListener('click', selectFileContents)
+
+function uploadFileContents(event) {
+    const file = event.target.files[0]
+    if (!file) {
+        console.warn('no file selected');
+        return
+    }
+    const reader = new FileReader()
+    reader.onload = (e) => {
+        $file_content.value = e.target.result
+    }
+    reader.readAsText(file)
+}
+$input_upload.addEventListener('change', uploadFileContents)
+
+function downloadFileContents(event) {
+    if(!$button_save.dataset.file) {
+        console.warn('no file selected');
+        return
+    }
+    const file = $button_save.dataset.file
+    const blob = new Blob([$file_content.value], {type: 'text/plain'})
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = file
+    a.click()
+    URL.revokeObjectURL(url)
+}
+$button_download.addEventListener('click', downloadFileContents)
 
 function renderFiles(data) {
 	$file_list.innerHTML = ''
