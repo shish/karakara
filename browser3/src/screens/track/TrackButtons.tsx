@@ -137,9 +137,9 @@ export function TrackButtons({
                         Enqueue
                     </button>
                     <BookmarkButton trackId={track.id} />
-                    {isAdmin && !booth && <Link to={`/api/edit/?track_id=${track.id}`}>
-                        <button type="button">Edit</button>
-                    </Link>}
+                    {isAdmin && !booth &&
+                        <a className="button" href={`/api/edit/?track_id=${track.id}`}>Edit</a>
+                    }
                 </ButtonRow>
             </>
         );
