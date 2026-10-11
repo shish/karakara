@@ -17,6 +17,7 @@ FROM astral/uv:python3.15-rc-alpine AS base
 
     RUN git config --global user.email api_edit@karakara.uk
     RUN git config --global user.name api_edit
+    RUN git config --global --add safe.directory /media/source
 
 FROM base AS dependencies
     COPY pyproject.toml uv.lock ./
