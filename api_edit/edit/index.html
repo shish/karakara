@@ -172,7 +172,24 @@ function downloadFileContents(event) {
 }
 $button_download.addEventListener('click', downloadFileContents)
 
+function filenameToTrackId(text) {
+    // Keep this in-sync with _filename_to_track_id in processmedia3
+    text = text.split('/').pop().split('.').shift()
+    text = text.replace(/\w+/g, function(txt) {
+        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    })
+    text = text.replace(/\s+\[.*?\]$/, '')
+    text = text.replace(/[^a-zA-Z0-9_]+/g, '_')
+    text = text.replace(/^_*|_*$/g, '');
+    return text
+}
+console.assert(filenameToTrackId('Anime/H-n-K - My Song (Miku ver) [Instrumental].txt') === 'H_N_K_My_Song_Miku_Ver');
+
 function renderFiles(data) {
+    const track_id = new URLSearchParams(location.search).get('track_id')
+    if(track_id) {
+        data = data.filter(file => filenameToTrackId(file) === track_id)
+    }
 	$file_list.innerHTML = ''
 	$file_list.appendChild(h('ul',{},data.map((file)=>{
 		const $link = h('a',{'data-file':file,href:'javascript:void(0)'},file)

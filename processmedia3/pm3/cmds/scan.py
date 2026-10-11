@@ -46,6 +46,29 @@ SCAN_IGNORE = [
 log = logging.getLogger(__name__)
 
 
+def _filename_to_track_id(text: str) -> str:
+    """
+    Keep this in-sync with filenameToTrackId in api_edit
+
+    Note that changing the output of this function will break people's bookmarks
+
+    >>> _filename_to_track_id("Anime/H-n-K - My Song (Miku ver) [Instrumental].txt")
+    'H_N_K_My_Song_Miku_Ver'
+    """
+    # text="Anime/My Song (Miku ver) [Instrumental].txt"
+    text = text.split('/')[-1].split('.')[0]
+    # text="My Song (Miku ver) [Instrumental]"
+    text = text.title()
+    # text="My Song (Miku Ver) [Instrumental]"
+    text = re.sub(r"\s+\[.*?\]$", "", text)
+    # text="My Song (Miku Ver)"
+    text = re.sub(r"[^a-zA-Z0-9_]+", "_", text)
+    # text="My_Song_Miku_Ver_"
+    text = text.strip("_")
+    # text="My_Song_Miku_Ver"
+    return text
+
+
 def scan(
     source_folder: AbstractFolder,
     processed_dir: Path,
@@ -78,12 +101,7 @@ def scan(
         if any((i in file.relative) for i in SCAN_IGNORE):
             continue
         if match is None or match in file.stem:
-            # filename: "My Track (Miku ver) [Instrumental].mp4"
-            # track_id: "My_Track_Miku_Ver"
-            matches = re.match(r"^(.*?)( \[(.+?)\])?$", file.stem.title())
-            assert matches is not None  # ".*" should always match
-            track_id = re.sub("[^0-9a-zA-Z]+", "_", matches.group(1)).strip("_")
-            grouped[track_id].add(file)
+            grouped[_filename_to_track_id(file.relative)].add(file)
     groups: list[tuple[str, set[AbstractFile]]] = sorted(grouped.items())
 
     # Turn all the (track_id, list of filenames) tuples into a
