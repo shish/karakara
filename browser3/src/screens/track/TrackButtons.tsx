@@ -36,7 +36,6 @@ export function TrackButtons({
 }) {
     const { queue, isAdmin } = useContext(RoomContext);
     const { performerName, setPerformerName, booth } = useContext(ClientContext);
-    const { roomName } = useParams();
     const [action, setAction] = useState<TrackAction>(TrackAction.NONE);
     const { request, sessionId } = useApi();
 
