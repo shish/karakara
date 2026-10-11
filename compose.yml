@@ -55,6 +55,16 @@ services:
       GIT_COMMIT_ON_WRITE: True
     volumes:
       - ${PATH_HOST_media}/source:/media/source:rw
+    labels:
+      kissycron.job-exec.update.schedule: "0 * * * *"
+      kissycron.job-exec.update.command: "cd /media/source && git add -A && git commit -m 'changes from an unknown source'"
+
+  cron:
+    image: shish2k/kissycron:latest
+    restart: unless-stopped
+    mem_limit: 1g
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
 
   mqtt:
     image: eclipse-mosquitto
