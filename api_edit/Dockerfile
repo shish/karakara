@@ -15,10 +15,6 @@ FROM astral/uv:python3.15-rc-alpine AS base
     ENV PATH_SOURCE=/media/source
     EXPOSE 8000
 
-    RUN git config --global user.email api_edit@karakara.uk
-    RUN git config --global user.name api_edit
-    RUN git config --global --add safe.directory /media/source
-
 FROM base AS dependencies
     COPY pyproject.toml uv.lock ./
     RUN UV_NO_SYNC=False uv sync --no-dev
@@ -30,7 +26,6 @@ FROM dependencies AS code
 
 FROM test_dependencies AS test
     COPY --from=code /app .
-    CMD [ "uv", "run", "litestar", "run" ]
+    CMD [ "/app/entrypoint.sh" ]
 FROM code AS production
-    RUN mkdir /.cache && chmod 777 /.cache
-    CMD [ "uv", "run", "litestar", "run" ]
+    CMD [ "/app/entrypoint.sh" ]
