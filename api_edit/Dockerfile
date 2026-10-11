@@ -15,6 +15,9 @@ FROM astral/uv:python3.15-rc-alpine AS base
     ENV PATH_SOURCE=/media/source
     EXPOSE 8000
 
+    RUN git config --global user.email api_edit@karakara.uk
+    RUN git config --global user.name api_edit
+
 FROM base AS dependencies
     COPY pyproject.toml uv.lock ./
     RUN UV_NO_SYNC=False uv sync --no-dev
