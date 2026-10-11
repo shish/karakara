@@ -2,7 +2,8 @@ import json
 import urllib.request
 from collections.abc import AsyncGenerator, Mapping, Sequence
 from pathlib import Path
-from types import MappingProxyType
+from types import MappingProxyType, TracebackType
+from typing import Self
 
 import pytest
 
@@ -48,16 +49,25 @@ class EditService:
         self.PATH_SOURCE = PATH_SOURCE
         self.tempfile_prefix = "_api_edit.pytest"
 
-    def _create_tempfiles(self) -> None:
+    def __enter__(self) -> Self:
+        # Create tempfiles
         txt = self.PATH_SOURCE.joinpath(self.tempfile_prefix + ".txt")
         srt = self.PATH_SOURCE.joinpath(self.tempfile_prefix + ".srt")
         txt.write_text("fake tags")
         srt.write_text("fake srt")
+        return self
 
-    def _teardown_tempfiles(self) -> None:
+    def __exit__(
+        self,
+        exctype: type[BaseException] | None,
+        excinst: BaseException | None,
+        exctb: TracebackType | None,
+    ) -> bool | None:
+        # Teardown_tempfiles
         for file in self.PATH_SOURCE.iterdir():
             if file.name.startswith(self.tempfile_prefix):
                 file.unlink()
+        return True
 
     @property
     async def index(self) -> str:
@@ -91,10 +101,8 @@ async def edit_service(
     EDIT_ENDPOINT: str,
     PATH_SOURCE: Path,
 ) -> AsyncGenerator[EditService]:
-    edit_service = EditService(EDIT_ENDPOINT, PATH_SOURCE)
-    edit_service._create_tempfiles()
-    yield edit_service
-    edit_service._teardown_tempfiles()
+    with EditService(EDIT_ENDPOINT, PATH_SOURCE) as edit_service:
+        yield edit_service
 
 
 async def test_index(edit_service: EditService) -> None:

@@ -1,5 +1,7 @@
 FROM astral/uv:python3.15-rc-alpine AS base
 
+    RUN apk add git
+
     # https://docs.astral.sh/ruff/configuration/#full-command-line-interface
     # https://mypy.readthedocs.io/en/stable/config_file.html#confval-cache_dir
     ENV RUFF_CACHE_DIR=/.ruff_cache
@@ -24,7 +26,6 @@ FROM dependencies AS code
 
 FROM test_dependencies AS test
     COPY --from=code /app .
-    RUN uv run pytest
     CMD [ "uv", "run", "litestar", "run" ]
 FROM code AS production
     CMD [ "uv", "run", "litestar", "run" ]
