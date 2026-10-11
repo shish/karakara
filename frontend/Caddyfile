@@ -1,3 +1,11 @@
+{
+    debug
+    metrics {
+        otlp
+        per_host
+    }
+}
+
 :80 {
 	###################################################################
 	# Server config
@@ -8,14 +16,16 @@
 
 	log {
 		output file /logs/caddy-access.json
-		format json {
-			time_format iso8601
-		}
 		format filter {
 			request>headers delete
 			resp_headers delete
 		}
 	}
+
+	tracing {
+	    span caddy
+	}
+	request_header X-Trace-Id {http.vars.trace_id}
 
 	###################################################################
 	# Common routes (work for all hostnames)
