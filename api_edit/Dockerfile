@@ -32,4 +32,5 @@ FROM test_dependencies AS test
     COPY --from=code /app .
     CMD [ "uv", "run", "litestar", "run" ]
 FROM code AS production
+    RUN mkdir /.cache && chmod 777 /.cache
     CMD [ "uv", "run", "litestar", "run" ]

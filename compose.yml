@@ -50,6 +50,7 @@ services:
     build: ./api_edit
     restart: unless-stopped
     mem_limit: 1g
+    user: ${UID}:${GID}
     environment:
       PATH_SOURCE: /media/source
       GIT_COMMIT_ON_WRITE: True
