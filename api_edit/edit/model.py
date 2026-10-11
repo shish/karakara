@@ -1,7 +1,9 @@
 import logging
+import subprocess
 from collections.abc import Iterable, Sequence
 from pathlib import Path
 from typing import Generator
+
 # import subprocess
 
 logger = logging.getLogger(__name__)
@@ -24,12 +26,29 @@ class FileModel:
             logger.warning(
                 f"No files matching {self.file_exts=}. Is path_source correct? {self.path_source=}"
             )
+
         self.git_commit_on_write = git_commit_on_write
-        if not self.git_commit_on_write:
+        if git_commit_on_write:
+            git_user_email_result = self._git(("config", "user.email"))
+            if git_user_email_result.returncode != 0:
+                # I wanted this to be an Exception,
+                # but because of shared volume state in test startup race, I've had to make this a logged.error.
+                # Suggestions welcome.
+                logger.error(
+                    f"{path_source=} is not managed by `git` but {git_commit_on_write=}"
+                    "This can happen in tests, but is a problem for production."
+                )
+        if not git_commit_on_write:
             logger.warning(
-                "Will not be running post_write hook to backup changes with git."
+                "Will not be running post_write hook to backup changes with `git`."
                 "This option should be on for production."
             )
+
+    def _git(self, cmds: Sequence[str]) -> subprocess.CompletedProcess:
+        if not self.git_commit_on_write:
+            logging.debug("preventing git %s", cmds)
+            return subprocess.CompletedProcess(cmds, 0)
+        return subprocess.run(("git", *cmds), cwd=self.path_source, check=False)
 
     @property
     def files(self) -> Iterable[Path]:
@@ -71,9 +90,9 @@ class FileModel:
         )
 
     def _commit_change(self, path: Path) -> None:
-        # TODO: subprocess shell
-        # git commit $path -m 'changed via webui'
-        return
+        path_relative = str(path.relative_to(self.path_source))
+        self._git(("add", path_relative))
+        self._git(("commit", path_relative, "--message", __name__))
 
     def file_read(self, path: Path) -> str:
         logger.debug("file_read - %s", path)
@@ -86,7 +105,7 @@ class FileModel:
         file_path = self._get_file(path)
         # file_path_backup = self._get_local_filesystem_backup_path(file_path)
         # file_path.copy(file_path_backup)
+        self._commit_change(file_path)  # should be null op for the files existing state, make sure the original state is version controlled
         file_path.write_text(data)
         logger.debug("file_write - %s", path)
-        if self.git_commit_on_write:
-            self._commit_change(file_path)
+        self._commit_change(file_path)

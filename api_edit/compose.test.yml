@@ -5,6 +5,7 @@ services:
       target: production
     environment:
       PATH_SOURCE: /media/source
+      GIT_COMMIT_ON_WRITE: True
     volumes:
       - test_media_source:/media/source:rw
 
