@@ -97,7 +97,7 @@ def create_app() -> litestar.Litestar:
             description=textwrap.dedent("""
             """),
             tags=[],
-            path="/api/edit/_docs",
+            path="/api/edit/docs",
             render_plugins=(RedocRenderPlugin(),),
         ),
     )
