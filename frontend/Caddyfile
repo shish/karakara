@@ -1,11 +1,3 @@
-{
-    debug
-    metrics {
-        otlp
-        per_host
-    }
-}
-
 :80 {
 	###################################################################
 	# Server config
@@ -21,11 +13,6 @@
 			resp_headers delete
 		}
 	}
-
-	tracing {
-	    span caddy
-	}
-	request_header X-Trace-Id {http.vars.trace_id}
 
 	###################################################################
 	# Common routes (work for all hostnames)
