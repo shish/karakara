@@ -34,3 +34,4 @@ hash_cache.pickle
 
 analytics.json
 tracks.json
+compose.override.yml

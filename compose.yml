@@ -1,10 +1,3 @@
-x-require-env: ${EXTERNAL_NETWORK:?Missing .env file - copy from .env.example and update settings as appropriate}
-
-networks:
-  default:
-    name: karakara_default
-    external: ${EXTERNAL_NETWORK}
-
 services:
   frontend:
     image: caddy:2.11.7-alpine
@@ -18,14 +11,6 @@ services:
       - ${PATH_HOST_media}/processed:/media/processed:ro
       - ${PWD}/tools/:/static/tools/:ro
       - ${PWD}/frontend/:/etc/caddy/:ro
-    labels:
-      traefik.enable: true
-      traefik.http.routers.karakara.rule: "Host(`${HOSTNAME}`)"
-      traefik.http.routers.karakara.middlewares: "kkredir"
-      traefik.http.middlewares.kkredir.redirectregex.regex: "^https://karakara.uk/$$"
-      traefik.http.middlewares.kkredir.redirectregex.replacement: "https://karakara.uk/browser3/"
-      kissycron.job-local.backup.schedule: "31 3 * * *"
-      kissycron.job-local.backup.command: "backup ${PWD}/.env ${PWD}/data /backups/karakara/"
 
   api_queue:
     build: ./api_queue
@@ -55,9 +40,6 @@ services:
       GIT_COMMIT_ON_WRITE: True
     volumes:
       - ${PATH_HOST_media}/source:/media/source:rw
-    labels:
-      kissycron.job-exec.update.schedule: "0 * * * *"
-      kissycron.job-exec.update.command: "export HOME=/tmp/user ; cd /media/source && git add -A && git commit -m 'changes from an unknown source'"
 
   mqtt:
     image: eclipse-mosquitto

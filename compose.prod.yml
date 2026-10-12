@@ -1,0 +1,31 @@
+# Overrides to integrate with Shish's server marigold
+#
+# To activate this configuration:
+#     ln -s compose.prod.yml compose.override.yml
+
+# Instead of directly exposing our own port 80, we want
+# to connect our frontend to the shared network, and then
+# the shared frontend (traefik) will expose 80/443 and
+# reverse-proxy traffic to us based on hostname
+networks:
+  shared:
+    name: shared
+    external: true
+
+services:
+  frontend:
+    ports: !reset []
+    networks: [default, shared]
+    labels:
+      traefik.enable: true
+      traefik.http.routers.karakara.rule: "Host(`karakara.uk`)"
+      traefik.http.routers.karakara.middlewares: "kkredir"
+      traefik.http.middlewares.kkredir.redirectregex.regex: "^https://karakara.uk/$$"
+      traefik.http.middlewares.kkredir.redirectregex.replacement: "https://karakara.uk/browser3/"
+      kissycron.job-local.backup.schedule: "31 3 * * *"
+      kissycron.job-local.backup.command: "backup ${PWD}/.env ${PWD}/compose.override.yml ${PWD}/data /backups/karakara/"
+
+  api_edit:
+    labels:
+      kissycron.job-exec.update.schedule: "0 * * * *"
+      kissycron.job-exec.update.command: "export HOME=/tmp/user ; cd /media/source && git add -A && git commit -m 'changes from an unknown source'"
