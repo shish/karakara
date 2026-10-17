@@ -221,9 +221,8 @@ async def submit_track(payload: dict[str, t.Any]) -> JSONResponse:
     session_id: str = payload["session_id"]
     tags = sanitize_tags(payload.get("tags"))
     track_id = tags_to_id(tags)
-
-    session_dir = get_unique_path(UPLOAD_ROOT / track_id)
-    meta_path = session_dir / f"{track_id}.txt"
+    track_dir = get_unique_path(UPLOAD_ROOT / track_id)
+    meta_path = track_dir / f"{track_id}.txt"
     await write_tags_file(meta_path, tags, "awaiting moderator approval")
 
     moved_files: list[str] = []
@@ -235,7 +234,7 @@ async def submit_track(payload: dict[str, t.Any]) -> JSONResponse:
             orig_path = Path(info["filename"])
             orig_filename = orig_path.name
 
-            targ_path = session_dir / Path(track_id).with_suffix(orig_path.suffix.lower()).name
+            targ_path = track_dir / Path(track_id).with_suffix(orig_path.suffix.lower()).name
             unique_path = get_unique_path(targ_path)
             shutil.move(data_path.as_posix(), unique_path.as_posix())
             moved_files.append(orig_filename)
