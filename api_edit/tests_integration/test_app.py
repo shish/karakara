@@ -118,10 +118,15 @@ class EditService:
         # return tuple(f.read_text() for f in self.PATH_SOURCE.glob(filename + "*"))
 
         # `git` version history
-        return (
-            self._git(("show", f"HEAD~1:{filename}")).stdout.decode("utf8"),
-            self._git(("show", f"HEAD:{filename}")).stdout.decode("utf8"),
+        commits = (
+            self._git(("log", "--pretty=%H", filename))
+            .stdout.decode("utf8")
+            .splitlines()
         )
+        return [
+            self._git(("show", f"{commit}:{filename}")).stdout.decode("utf8")
+            for commit in commits
+        ]
 
 
 @pytest.fixture(scope="session")
