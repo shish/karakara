@@ -89,16 +89,22 @@ class FileModel:
             )
         )
 
-    def _commit_change(self, path: Path) -> None:
+    def _commit_change(self, path: Path, username: str | None = None, message: str | None = None) -> None:
         path_relative = str(path.relative_to(self.path_source))
         self._git(("add", path_relative))
-        self._git(("commit", path_relative, "--message", f"{__name__} {path_relative}"))
+
+        if not username:
+            username = "Anonymous"
+        if not message:
+            message = f"{__name__} {path_relative}"
+
+        self._git(("-c", f"user.name={username}", "commit", path_relative, "--message", message))
 
     def file_read(self, path: Path) -> str:
         logger.debug("file_read - %s", path)
         return self._get_file(path).read_text()
 
-    def file_write(self, path: Path, data: str) -> None:
+    def file_write(self, path: Path, data: str, username: str | None = None, message: str | None = None) -> None:
         if self.file_read(path) == data:
             logger.debug("File content unchanged - abort save - %s", path)
             return
@@ -109,7 +115,7 @@ class FileModel:
         # file_path.copy(file_path_backup)
 
         # git commit: should be null op for the files existing state, make sure the original state is version controlled
-        self._commit_change(file_path)
+        self._commit_change(file_path, None, "Add pre-existing file")
         file_path.write_text(data)
         logger.debug("file_write - %s", path)
-        self._commit_change(file_path)
+        self._commit_change(file_path, username, message)

@@ -62,6 +62,8 @@ async def file_read(file_model: FileModel, file_path: str) -> str:
 @dataclasses.dataclass
 class FileContents:
     content: str
+    username: str | None = None
+    message: str | None = None
 
 
 @litestar.post(
@@ -70,7 +72,7 @@ class FileContents:
     """),
 )
 async def file_write(file_model: FileModel, file_path: str, data: FileContents) -> None:
-    file_model.file_write(Path(file_path.lstrip("/")), data.content)
+    file_model.file_write(Path(file_path.lstrip("/")), data.content, data.username, data.message)
 
 
 def init_file_model(app: litestar.Litestar) -> None:

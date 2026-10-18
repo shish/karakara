@@ -7,72 +7,67 @@
         :root {color-scheme: light dark;}
         * {box-sizing: border-box;}
 
-  		html, body {
-			font-family: sans-serif;
+  		html {
+            font-family: sans-serif;
+		}
+		body {
 			padding: 0;
 			margin: 0;
 			overflow: hidden;
-		}
 
-		.flex_container {
 			display: grid;
-			grid-template-columns: 1fr 1fr 1fr;
-			grid-template-rows: 1fr;
-			grid-column-gap: 0;
-		}
-		.flex_container > div {
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			justify-content: start;
-			width: 50vw;
+			grid-template:
+			    "list upload   title    download" min-content
+			    "list content  content  content " 1fr
+				"list username username save    " min-content
+				"list message  message  save    " min-content
+				/ 50vw 10vw 30vw 10vw;
+			width: 100vw;
+			height: 100vh;
 		}
 
 		#file_list {
+			grid-area: list;
 			overflow-y: scroll;
-			height: 100vh;
 		}
-		#controls {
-			display: grid;
-			grid-template:
-				"upload title save" 1fr
-				"download title save" 1fr
-				/ 1fr 2fr 1fr;
-			width: 100%;
-		}
-		#controls #button_upload {
+		#button_upload {
 			grid-area: upload;
 		}
-		#controls #button_download {
+		#button_download {
 			grid-area: download;
 		}
-		#controls #button_save {
+		#button_save {
 			grid-area: save;
 		}
-		#controls h2 {
+		#file_title {
 			grid-area: title;
 			text-align: center;
 		}
-		#file_container textarea {
-			width: 100%;
-			height: 100%;
+		#file_content {
+			grid-area: content;
+		}
+		#username {
+			grid-area: username;
+		}
+		#message {
+			grid-area: message;
+		}
+		#button_save {
+			grid-area: save;
 		}
 	</style>
 </head>
 <body>
-<div class="flex_container">
-	<div id="file_list">Loading ...</div>
-	<div id="file_container">
-    	<div id="controls">
-        	<input type="file" id="input_upload" hidden />
-        	<button id="button_upload">Load from File</button>
-        	<button id="button_download">Save as File</button>
-        	<h2 id="file_title">No file selected</h2>
-        	<button id="button_save">Save</button>
-    	</div>
-        <textarea id="file_content"></textarea>
-	</div>
-</div>
+    <div id="file_list">Loading ...</div>
+    <input type="file" id="input_upload" hidden />
+    <button id="button_upload">Load from File</button>
+    <h2 id="file_title">No file selected</h2>
+    <button id="button_download">Download as File</button>
+    <textarea id="file_content"></textarea>
+    <input type="text" id="username" placeholder="Username (optional)" />
+    <input type="text" id="message" placeholder="Change description (optional)" />
+    <button id="button_save">Save</button>
+
 <script type="module">
 
 const hasIterationProtocol = variable => variable !== null && Symbol.iterator in Object(variable)
@@ -92,6 +87,8 @@ const $button_save = document.getElementById('button_save')
 const $input_upload = document.getElementById('input_upload')
 const $button_upload = document.getElementById('button_upload')
 const $button_download = document.getElementById('button_download')
+const $username = document.getElementById('username')
+const $message = document.getElementById('message')
 
 function getFileContents(event) {
 	const file = event.target.dataset.file
@@ -115,9 +112,18 @@ function postFileContents(event) {
 		return
 	}
 	console.log('save', file, $file_content.value)
+	const body = {
+		content: $file_content.value
+	}
+	if ($username.value) {
+		body.username = $username.value
+	}
+	if ($message.value) {
+		body.message = $message.value
+	}
 	fetch(`file/${file}`, {
 		method: "POST",
-		body: JSON.stringify({content: $file_content.value})
+		body: JSON.stringify(body)
 	})
 		.then(response => {
 			if (response.status != 201) {
@@ -201,7 +207,17 @@ function renderFiles(data) {
 fetch(`files.json`)
     .then(response => response.json())
     .then(renderFiles)
-.catch(err => alert(err));
+    .catch(err => alert(err))
+
+$username.addEventListener('change', function() {
+    localStorage.setItem('karakara_contributor_name', $username.value)
+})
+document.addEventListener('DOMContentLoaded', function() {
+    const savedUsername = localStorage.getItem('karakara_contributor_name')
+    if (savedUsername) {
+        $username.value = savedUsername
+    }
+})
 
 </script>
 </body>
