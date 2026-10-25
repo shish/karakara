@@ -49,7 +49,7 @@
         "js-yaml": "^5.4.2",
         "jsdom": "^30.1.1",
         "openapi-typescript": "git+https://github.com/shish/openapi-typescript.git?subdirectory=packages/openapi-typescript#ts7",
-        "storybook": "^10.6.0",
+        "storybook": "^10.6.3",
         "storybook-react-rsbuild": "^3.6.0",
         "typescript": "^7.0",
         "vitest": "^5.0.3"
