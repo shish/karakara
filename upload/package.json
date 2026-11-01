@@ -11,15 +11,15 @@
         "check": "biome check ."
     },
     "dependencies": {
-        "react": "^19.3.0",
-        "react-dom": "^19.3.0",
-        "react-router-dom": "^7.18.4",
+        "react": "^19.3.1",
+        "react-dom": "^19.3.1",
+        "react-router-dom": "^7.18.5",
         "tus-js-client": "^4.3.1",
         "usehooks-ts": "^3.1.1"
     },
     "devDependencies": {
-        "@biomejs/biome": "^2.5.14",
-        "@rsbuild/core": "^2.2.10",
+        "@biomejs/biome": "^2.6.4",
+        "@rsbuild/core": "^2.2.14",
         "@rsbuild/plugin-react": "^2.1.1",
         "@types/react": "^19.3.0",
         "@types/react-dom": "^19.3.0",
