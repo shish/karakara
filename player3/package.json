@@ -31,7 +31,7 @@
         "usehooks-ts": "^3.1.1"
     },
     "devDependencies": {
-        "@biomejs/biome": "^2.5.14",
+        "@biomejs/biome": "^2.6.4",
         "@rsbuild/core": "^2.2.10",
         "@rsbuild/plugin-react": "^2.1.1",
         "@rsbuild/plugin-sass": "^2.0.1",
