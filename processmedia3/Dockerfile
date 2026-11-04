@@ -2,7 +2,7 @@ FROM python:3.14-alpine AS base
 WORKDIR /app
 COPY --from=mwader/static-ffmpeg:7.1.1 /ffmpeg /ffprobe /usr/local/bin/
 RUN apk add --no-cache \
-    imagemagick imagemagick-jpeg imagemagick-webp imagemagick-heic
+    imagemagick imagemagick-jpeg imagemagick-webp imagemagick-heic libavif libheif
 COPY pyproject.toml uv.lock ./
 RUN pip install -e .
 COPY ./pm3 ./pm3
