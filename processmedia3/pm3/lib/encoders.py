@@ -401,7 +401,7 @@ class _BaseImageToImage(Encoder):
     def encode(self, target: Path, sources: set[Source]) -> None:
         # fmt: off
         self._run(
-            "convert",
+            "magick",
             list(sources)[0].file.absolute,  # TODO: double check `convert` can take url as input
             *self.conf_video,
             *self.conf_vcodec,
