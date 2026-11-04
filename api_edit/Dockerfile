@@ -1,12 +1,12 @@
-FROM astral/uv:python3.15-rc-alpine AS base
+FROM astral/uv:0.13.6-alpine AS base
 
     RUN apk add git
 
     # https://docs.astral.sh/ruff/configuration/#full-command-line-interface
     # https://mypy.readthedocs.io/en/stable/config_file.html#confval-cache_dir
-    ENV RUFF_CACHE_DIR=/.ruff_cache
-    ENV MYPY_CACHE_DIR=/.mypy_cache
-    ENV UV_PROJECT_ENVIRONMENT=/.uv.venv
+    ENV RUFF_CACHE_DIR=~/.cache/ruff_cache
+    ENV MYPY_CACHE_DIR=~/.cache/mypy_cache
+    ENV UV_PROJECT_ENVIRONMENT=~/.cache/.uv.venv
     ENV UV_NO_SYNC=True
     ENV LITESTAR_PORT=8000
     ENV LITESTAR_HOST=0.0.0.0

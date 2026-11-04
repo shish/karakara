@@ -34,7 +34,8 @@ addopts = ["--doctest-modules", "--mypy", "--ruff", "--ruff-format"]
 testpaths = ["tests"]
 asyncio_mode = "auto"
 pythonpath = ["."]
-cache_dir = "../.pytest_cache"
+cache_dir = "~/.cache/pytest_cache"
+asyncio_default_fixture_loop_scope = "session"
 filterwarnings = [
     "error",
 ]
