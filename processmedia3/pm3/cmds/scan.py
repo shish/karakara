@@ -52,11 +52,21 @@ def _filename_to_track_id(text: str) -> str:
 
     Note that changing the output of this function will break people's bookmarks
 
-    >>> _filename_to_track_id("Anime/H-n-K - My Song (Miku ver) [Instrumental].txt")
-    'H_N_K_My_Song_Miku_Ver'
+    >>> _filename_to_track_id("Anime/H-n-K - Mr. Song (Miku ver) [Instrumental].txt")
+    'H_N_K_Mr_Song_Miku_Ver'
+    >>> _filename_to_track_id("1st Song.mp4")
+    '1St_Song'
+    >>> _filename_to_track_id("my_song.srt")
+    'My_Song'
+    >>> _filename_to_track_id("Don't Stop.txt")
+    'Don_T_Stop'
+    >>> _filename_to_track_id("Song.Name.v2.mp4")
+    'Song_Name_V2'
+    >>> _filename_to_track_id("HELLO world")
+    'Hello_World'
     """
     # text="Anime/My Song (Miku ver) [Instrumental].txt"
-    text = text.split('/')[-1].split('.')[0]
+    text = text.split('/')[-1].rsplit('.', 1)[0]
     # text="My Song (Miku ver) [Instrumental]"
     text = text.title()
     # text="My Song (Miku Ver) [Instrumental]"
