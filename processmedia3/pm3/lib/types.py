@@ -35,9 +35,9 @@ class Settings(TypedDict):
     forced_tags: list[str]
     preview_volume: float
     coming_soon_track_count: int
-    validation_event_start_datetime: str | None
-    validation_event_end_datetime: str | None
-    auto_reorder_queue: bool
+    validation_event_start_datetime: NotRequired[str | None]
+    validation_event_end_datetime: NotRequired[str | None]
+    auto_reorder_queue: NotRequired[bool]
 
 
 class LintError(TypedDict):

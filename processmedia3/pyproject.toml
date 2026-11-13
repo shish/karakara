@@ -2,7 +2,8 @@
 name = "processmedia3"
 version = "0.0.0"
 readme = "README.md"
-requires-python = ">=3.14"
+# datamodel-code-generator doesn't do 3.15 yet
+requires-python = "~=3.14.0"
 dependencies = [
 	"tqdm",
 	"pillow",
