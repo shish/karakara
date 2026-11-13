@@ -184,10 +184,7 @@ export const SettingsSchema = {
     "hidden_tags",
     "forced_tags",
     "preview_volume",
-    "coming_soon_track_count",
-    "validation_event_start_datetime",
-    "validation_event_end_datetime",
-    "auto_reorder_queue"
+    "coming_soon_track_count"
   ],
   "properties": {
     "title": {
