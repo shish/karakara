@@ -10,10 +10,12 @@ export function LyricsViewer({
     track,
     variant,
     listItem = false,
+    trackTime,
 }: {
     track: Track;
     variant: string | null;
     listItem?: boolean;
+    trackTime?: number;
 }): React.ReactElement | null {
     const [lyrics, setLyrics] = useState<Subtitle[]>([]);
     const { request } = useApi();
@@ -31,6 +33,11 @@ export function LyricsViewer({
         }
     }, [request, track, variant]);
 
+    const isActive = (line: Subtitle): boolean =>
+        trackTime !== undefined &&
+        trackTime >= line.start &&
+        trackTime < line.end;
+
     if (lyrics.length === 0) {
         return null;
     } else {
@@ -38,7 +45,12 @@ export function LyricsViewer({
             <li>
                 <div className={styles.lyrics}>
                     {lyrics.map((line, n) => (
-                        <div key={n}>{line.text}</div>
+                        <div
+                            key={n}
+                            className={isActive(line) ? styles.active : undefined}
+                        >
+                            {line.text}
+                        </div>
                     ))}
                 </div>
             </li>
@@ -46,8 +58,13 @@ export function LyricsViewer({
             <>
                 <h2>Lyrics</h2>
                 <div className={styles.lyrics}>
-                    {lyrics.map((item, n) => (
-                        <div key={n}>{item.text}</div>
+                    {lyrics.map((line, n) => (
+                        <div
+                            key={n}
+                            className={isActive(line) ? styles.active : undefined}
+                        >
+                            {line.text}
+                        </div>
                     ))}
                 </div>
             </>

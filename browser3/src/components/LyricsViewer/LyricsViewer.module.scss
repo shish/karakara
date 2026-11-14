@@ -1,4 +1,12 @@
 .lyrics {
     font-weight: normal;
     user-select: text;
+
+    div {
+        transition: color 0.5s ease;
+    }
+}
+
+.active {
+    color: var(--lyrics-active);
 }

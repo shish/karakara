@@ -28,6 +28,8 @@
     --drop-target: #f00;
     --validation-error: #d00;
 
+    --lyrics-active: oklch(0.62 0.17 80);
+
     @media (prefers-color-scheme: dark) {
         --page-bg: #080808;
         --page-fg: #fff;
@@ -57,5 +59,7 @@
 
         --drop-target: #600;
         --validation-error: #c44;
+
+        --lyrics-active: oklch(0.88 0.17 95);
     }
 }
